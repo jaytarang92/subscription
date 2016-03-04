@@ -8,9 +8,8 @@ import time
 from selenium import webdriver
 from selenium.webdriver.common.keys import Keys
 from twilio.rest import TwilioRestClient
-import requests
 import re
-
+import requests
 
 
 class HtmlRat:
@@ -59,49 +58,49 @@ class WebBrowser:
     def close(self):
         self.driver.close()
 
-def zip_chk():
-    try:
-        float(zip)
-        print "Zip code is good yo"
-        return True
-    except:
-        print "Zip is no bueno try parsing again"
-        os.system("python html_handlerv2.py")
+class Subscription:
+    def __init__(self):
+        pass
+    def siriusxm(self):
+        browser = WebBrowser()
+        browser.open_site("http://fakemailgenerator.com/#/"+domain+"/"+user)
+        browser.newTab()
+        browser.open_site('https://streaming.siriusxm.com/?/flepz=true#_frmAccountLookup')
+        browser.typer("frmAccountLookup_txtFName", first)
+        browser.typer("frmAccountLookup_txtLName", last)
+        browser.typer("frmAccountLookup_txtEmail", email)
+        browser.typer("frmAccountLookup_txtPhone", fphone)
+        browser.typer("frmAccountLookup_txtzipcode", zip)
+        browser.clicker("frmAccountLookup_btnnext")
+        browser.clicker("frmSelfIdentity_imageDonotRadio")
+        browser.clicker("frmSetupLogin_btnDone")
+        browser.close()
+    # Will be adding more sites soon!
 
-Class Subscription:
-	def siriusxm():
-		browser = WebBrowser()
-		browser.open_site("http://fakemailgenerator.com/#/"+domain+"/"+user)
-		browser.newTab()
-		browser.open_site('https://streaming.siriusxm.com/?/flepz=true#_frmAccountLookup')
-		browser.typer("frmAccountLookup_txtFName", first)
-		browser.typer("frmAccountLookup_txtLName", last)
-		browser.typer("frmAccountLookup_txtEmail", email)
-		browser.typer("frmAccountLookup_txtPhone", fphone)
-		browser.typer("frmAccountLookup_txtzipcode", zip)
-		browser.clicker("frmAccountLookup_btnnext")
-		browser.clicker("frmSelfIdentity_imageDonotRadio")
-		browser.clicker("frmSetupLogin_btnDone")
-		browser.close()
-	# Will be adding more sites soon!
+class Messenger:
+    def __init__(self):
+        pass
+    
+    def send_txt(message):
 
-def send_txt(message):
+        #SID/Token are retrievable from your accounts page
+        ACCOUNT_SID = "ACcce1c4143b4642d547ffda9ddde4bf9c"
+        AUTH_TOKEN = "6cf7df628257162286b6bcb5efbdc4cc"
 
-    #SID/Token are retrievable from your accounts page
-    ACCOUNT_SID = "ACcce1c4143b4642d547ffda9ddde4bf9c"
-    AUTH_TOKEN = "6cf7df628257162286b6bcb5efbdc4cc"
+        client = TwilioRestClient(ACCOUNT_SID, AUTH_TOKEN)
 
-    client = TwilioRestClient(ACCOUNT_SID, AUTH_TOKEN)
+        message = client.messages.create(
+            body="'"+message+"'",  # Message body, if any
+            to="+ADDPHONEHERE", # Add your phone number here
+            from_="+ADDTIWLIOHERE", #Add the number given by twilio
+        )
+        print message.sid
 
-    message = client.messages.create(
-        body="'"+message+"'",  # Message body, if any
-        to="+ADDPHONEHERE", # Add your phone number here
-        from_="+ADDTIWLIOHERE", #Add the number given by twilio
-    )
-    print message.sid
-
-# Defining the class
+# Defining the classes
 markup = HtmlRat()
+sub = Subscription()
+txtmsg = Messenger()
+
 # execute functions to get data via xpath
 tree1 = markup.req_page("http://fakenamegenerator.com")
 aname = markup.tag_data('//*[@id="details"]/div[2]/div[2]/div/div[1]/h3')
@@ -113,18 +112,17 @@ address = markup.tag_data('//*[@id="details"]/div[2]/div[2]/div/div[1]/div')
 first = aname[0]
 last = aname[2]
 email = mail[0]
+
 # could have done a function (for the email spit)but whatever
 d = re.search("@[\w.]+", email).group().split("@")
 domain = d[1]
 user = re.search("[\w.]+", email).group()
 # end of all the stripping of email addresses
+
 fphone = re.sub("[^0-9]", "", phone[0])
-#faddress = address[40], address[41], address[43], address[44]
-zip = address[-1]
+zip = address[-1] # last one in the array is the zip
+
 print (first, last, email, fphone, zip)
 
-zip_chk()
-siriusxm()
 
-# If you want to send a text message use function send_txt("type message here" below it will send me the email address
-send_txt(email)
+sub.siriusxm()
