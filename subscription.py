@@ -18,7 +18,6 @@ class HtmlRat:
         pass
 
     def req_page(self, url):
-
         page = requests.get(url)
         tree = html.fromstring(page.content)
         return tree
@@ -29,7 +28,7 @@ class HtmlRat:
         val = val.split(' ')
         return val
 
-#Basic selenium setup
+
 class WebBrowser:
 
     def __init__(self):
@@ -52,20 +51,29 @@ class WebBrowser:
         self.driver.find_element_by_id(id).click()
         time.sleep(5)
 
+    def clickerX(self, xpath):
+        self.driver.find_element_by_xpath(xpath).click()
+        time.sleep(5)
+
     def wait(self, sec):
+        print "start of wait"
         time.sleep(sec)
+        print "end of wait"
 
     def close(self):
         self.driver.close()
 
+
 class Subscription:
     def __init__(self):
         pass
+
     def siriusxm(self):
         browser = WebBrowser()
-        browser.open_site("http://fakemailgenerator.com/#/"+domain+"/"+user)
+        browser.open_site("http://fakemailgenerator.com/#/"+domainre+"/"+first+"/")
         browser.newTab()
         browser.open_site('https://streaming.siriusxm.com/?/flepz=true#_frmAccountLookup')
+        time.sleep(2)
         browser.typer("frmAccountLookup_txtFName", first)
         browser.typer("frmAccountLookup_txtLName", last)
         browser.typer("frmAccountLookup_txtEmail", email)
@@ -74,8 +82,9 @@ class Subscription:
         browser.clicker("frmAccountLookup_btnnext")
         browser.clicker("frmSelfIdentity_imageDonotRadio")
         browser.clicker("frmSetupLogin_btnDone")
-        browser.close()
+        #browser.close()
     # Will be adding more sites soon!
+
 
 class Messenger:
     def __init__(self):
@@ -104,24 +113,25 @@ txtmsg = Messenger()
 # execute functions to get data via xpath
 tree1 = markup.req_page("http://fakenamegenerator.com")
 aname = markup.tag_data('//*[@id="details"]/div[2]/div[2]/div/div[1]/h3')
-mail = markup.tag_data('//*[@id="details"]/div[2]/div[2]/div/div[2]/dl[9]/dd')
 phone = markup.tag_data('//*[@id="details"]/div[2]/div[2]/div/div[2]/dl[4]/dd')
 address = markup.tag_data('//*[@id="details"]/div[2]/div[2]/div/div[1]/div')
 
 #variables with the values
 first = aname[0]
 last = aname[2]
-email = mail[0]
-
-# could have done a function (for the email spit)but whatever
-d = re.search("@[\w.]+", email).group().split("@")
-domain = d[1]
-user = re.search("[\w.]+", email).group()
-# end of all the stripping of email addresses
 
 fphone = re.sub("[^0-9]", "", phone[0])
 zip = address[-1] # last one in the array is the zip
 
+tree1 = markup.req_page("http://fakemailgenerator.com")
+user = markup.tag_data('//*[@id="home-email"]')
+domain = markup.tag_data('//*[@id="domain"]')
+# could have done a function (for the email spit)but whatever
+d = domain[0].split("@")
+domainre = d[1]
+#user = re.search("[\w.]+", email).group()
+# end of all the stripping of email addresses
+email = first+"@"+domainre
 print (first, last, email, fphone, zip)
 
 
