@@ -85,6 +85,17 @@ class Subscription:
         #browser.close()
     # Will be adding more sites soon!
 
+class Eaccount:
+    def __init__(self):
+        self.browser = WebBrowser()
+
+    def zoho(self):
+        self.browser.open_site("https://mail.zoho.com/biz/createAcc.do")
+        self.browser.typer("sfirstname", first)
+        self.browser.typer("lastname", last)
+        self.browser.typer("username", user)
+        self.browser.typer("password", password)
+        self.browser.typer("email", email)
 
 class Messenger:
     def __init__(self):
@@ -109,7 +120,7 @@ class Messenger:
 markup = HtmlRat()
 sub = Subscription()
 txtmsg = Messenger()
-
+egen = Eaccount()
 # execute functions to get data via xpath
 tree1 = markup.req_page("http://fakenamegenerator.com")
 aname = markup.tag_data('//*[@id="details"]/div[2]/div[2]/div/div[1]/h3')
@@ -135,4 +146,5 @@ email = first+"@"+domainre
 print (first, last, email, fphone, zip)
 
 
-sub.siriusxm()
+#sub.siriusxm()
+egen.zoho()
